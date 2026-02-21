@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../../services/auth.service';
+import { signIn } from '../../services/cognitoAuth';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -15,7 +15,7 @@ const Login = () => {
         setLoading(true);
 
         try {
-            await login(email, password);
+            await signIn(email, password);
             // Redirect to dashboard on success
             navigate('/dashboard');
         } catch (err) {
