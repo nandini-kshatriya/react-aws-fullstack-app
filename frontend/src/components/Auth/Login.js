@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { signIn } from '../../services/cognitoAuth';
 
 const Login = () => {
@@ -16,7 +16,6 @@ const Login = () => {
 
         try {
             await signIn(email, password);
-            // Redirect to dashboard on success
             navigate('/dashboard');
         } catch (err) {
             setError(err.message || 'Failed to login');
@@ -41,11 +40,10 @@ const Login = () => {
 
                             <form onSubmit={handleLogin}>
                                 <div className="mb-3">
-                                    <label htmlFor="emailInput" className="form-label text-muted">Email address</label>
+                                    <label className="form-label text-muted">Email address</label>
                                     <input
                                         type="email"
                                         className="form-control"
-                                        id="emailInput"
                                         placeholder="Enter email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -55,11 +53,10 @@ const Login = () => {
                                 </div>
 
                                 <div className="mb-4">
-                                    <label htmlFor="passwordInput" className="form-label text-muted">Password</label>
+                                    <label className="form-label text-muted">Password</label>
                                     <input
                                         type="password"
                                         className="form-control"
-                                        id="passwordInput"
                                         placeholder="Password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -73,16 +70,15 @@ const Login = () => {
                                     className="btn btn-primary w-100 py-2"
                                     disabled={loading}
                                 >
-                                    {loading ? (
-                                        <>
-                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                            Logging in...
-                                        </>
-                                    ) : (
-                                        'Login'
-                                    )}
+                                    {loading ? 'Logging in...' : 'Login'}
                                 </button>
                             </form>
+
+                            {/* ⭐ SIGNUP LINK ADDED HERE */}
+                            <p className="text-center mt-3">
+                                New user? <Link to="/signup">Create account</Link>
+                            </p>
+
                         </div>
                     </div>
                 </div>

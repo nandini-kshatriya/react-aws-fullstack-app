@@ -1,12 +1,12 @@
 import {
     CognitoUserPool,
     CognitoUser,
-    AuthenticationDetails
+    AuthenticationDetails,
+    CognitoUserAttribute
 } from "amazon-cognito-identity-js";
 
 import { cognitoConfig } from "../cognitoConfig";
 
-// ✅ Create pool FIRST
 const poolData = {
     UserPoolId: cognitoConfig.UserPoolId,
     ClientId: cognitoConfig.ClientId
@@ -14,7 +14,57 @@ const poolData = {
 
 const userPool = new CognitoUserPool(poolData);
 
-// ✅ SIGN IN FUNCTION
+
+
+
+
+// ================= SIGNUP =================
+export const signUp = (email, password) => {
+    return new Promise((resolve, reject) => {
+
+        const attributeList = [];
+
+        const emailAttribute = new CognitoUserAttribute({
+            Name: "email",
+            Value: email
+        });
+
+        attributeList.push(emailAttribute);
+
+        userPool.signUp(email, password, attributeList, null, (err, result) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            console.log("Signup success", result.user);
+            resolve(result.user);
+        });
+    });
+};
+
+
+
+// ================ Verify ================
+export const confirmSignUp = (username, code) => {
+  return new Promise((resolve, reject) => {
+    const userData = {
+      Username: username,
+      Pool: userPool,
+    };
+
+    const cognitoUser = new CognitoUser(userData);
+
+    cognitoUser.confirmRegistration(code, true, (err, result) => {
+      if (err) reject(err);
+      else resolve(result);
+    });
+  });
+}
+
+
+
+// ================= LOGIN =================
 export const signIn = (username, password) => {
     return new Promise((resolve, reject) => {
 
@@ -42,10 +92,12 @@ export const signIn = (username, password) => {
                 reject(err);
             },
 
-            newPasswordRequired: () => {
+            newPasswordRequired: (userAttributes) => {
+
+                delete userAttributes.email_verified;
 
                 const newPassword = prompt(
-                    "Enter your new password (min 8 chars, 1 uppercase, 1 number)"
+                    "Enter new password (min 8 chars, 1 uppercase, 1 number)"
                 );
 
                 if (!newPassword) {
@@ -55,16 +107,10 @@ export const signIn = (username, password) => {
 
                 cognitoUser.completeNewPasswordChallenge(
                     newPassword,
-                    {},
+                    userAttributes,
                     {
-                        onSuccess: (result) => {
-                            console.log("Password updated & login success", result);
-                            resolve(result);
-                        },
-                        onFailure: (err) => {
-                            console.error("Password update error", err);
-                            reject(err);
-                        }
+                        onSuccess: resolve,
+                        onFailure: reject
                     }
                 );
             }
@@ -72,7 +118,10 @@ export const signIn = (username, password) => {
     });
 };
 
-// ✅ LOGOUT
+
+
+
+// ================= LOGOUT =================
 export const logout = () => {
     const user = userPool.getCurrentUser();
     if (user) user.signOut();
