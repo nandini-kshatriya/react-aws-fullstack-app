@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getCurrentUserToken } from "../../services/cognitoAuth";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -11,16 +12,29 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetch("https://j8741kd7m8.execute-api.ap-south-1.amazonaws.com/orders")
-      .then(res => res.json())
-      .then(data => {
+    const loadOrders = async () => {
+      try {
+        const token = await getCurrentUserToken();
+
+        const res = await fetch(
+          "https://j8741kd7m8.execute-api.ap-south-1.amazonaws.com/orders",
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+
+        const data = await res.json();
         setOrders(data);
-        setLoading(false);
-      })
-      .catch(err => {
+      } catch (err) {
         console.error(err);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    loadOrders();
   }, []);
 
   return (
@@ -41,14 +55,16 @@ const Dashboard = () => {
           ) : (
             <ul className="list-group">
               {orders.map((item) => (
-                <li key={item.id} className="list-group-item d-flex justify-content-between">
+                <li
+                  key={item.id}
+                  className="list-group-item d-flex justify-content-between"
+                >
                   {item.name}
                   <span className="badge bg-success">{item.status}</span>
                 </li>
               ))}
             </ul>
           )}
-
         </div>
       </div>
     </div>

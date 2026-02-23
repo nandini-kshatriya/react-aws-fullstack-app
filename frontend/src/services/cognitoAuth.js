@@ -126,3 +126,24 @@ export const logout = () => {
     const user = userPool.getCurrentUser();
     if (user) user.signOut();
 };
+
+// ================ Helper ==============
+export const getCurrentUserToken = () => {
+  return new Promise((resolve, reject) => {
+    const user = userPool.getCurrentUser();
+
+    if (!user) {
+      reject("No user found");
+      return;
+    }
+
+    user.getSession((err, session) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      resolve(session.getIdToken().getJwtToken());
+    });
+  });
+};
