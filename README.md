@@ -57,18 +57,22 @@ This project was built to demonstrate:
 * Scalable web application structure
 
 
+## AWS Architecture Screenshots
+
+### Cognito User Pool
+![Cognito](screenshots/cognito.png)
+
+### API Gateway
+![API Gateway](screenshots/api-gateway.png)
+
+### Lambda Function
+![Lambda](screenshots/lambda.png)
+
 ## Future Improvements
 
 * Add monitoring with CloudWatch
 * CI/CD pipeline using GitHub Actions
 
-## AWS Architecture Screenshots
-
-### Cognito User Pool
-
-### API Gateway
-
-### Lambda Function
 
 
 ## Author
