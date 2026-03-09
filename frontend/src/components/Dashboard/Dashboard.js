@@ -8,6 +8,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   const logout = () => {
+    localStorage.clear();
     navigate("/");
   };
 
@@ -38,34 +39,66 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="container mt-5">
-      <div className="d-flex justify-content-between mb-4">
-        <h2>Dashboard</h2>
-        <button className="btn btn-danger" onClick={logout}>
+    <div style={{ minHeight: "100vh", background: "#f5f6fa" }}>
+      <nav
+        style={{
+          background: "#2f3640",
+          padding: "15px 40px",
+          color: "white",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <h3>AWS Serverless App</h3>
+        <button
+          onClick={logout}
+          style={{
+            background: "#e84118",
+            border: "none",
+            padding: "8px 15px",
+            color: "white",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
           Logout
         </button>
-      </div>
+      </nav>
 
-      <div className="card shadow-sm">
-        <div className="card-body">
-          <h5 className="mb-3">Orders from AWS API</h5>
+      <div style={{ padding: "40px" }}>
+        <h2>Dashboard</h2>
+        <p>Orders from secured AWS API</p>
 
-          {loading ? (
-            <p>Loading orders...</p>
-          ) : (
-            <ul className="list-group">
-              {orders.map((item) => (
-                <li
-                  key={item.id}
-                  className="list-group-item d-flex justify-content-between"
-                >
-                  {item.name}
-                  <span className="badge bg-success">{item.status}</span>
-                </li>
+        {loading ? (
+          <p>Loading...</p>
+        ) : orders.length === 0 ? (
+          <p>No orders found</p>
+        ) : (
+          <table
+            style={{
+              width: "100%",
+              background: "white",
+              borderCollapse: "collapse",
+              marginTop: "20px",
+            }}
+          >
+            <thead>
+              <tr style={{ background: "#273c75", color: "white" }}>
+                <th style={{ padding: "10px" }}>Order</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {orders.map((order) => (
+                <tr key={order.id}>
+                  <td style={{ padding: "10px" }}>{order.name}</td>
+                  <td>{order.status}</td>
+                </tr>
               ))}
-            </ul>
-          )}
-        </div>
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
