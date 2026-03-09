@@ -65,13 +65,10 @@ This project was built to demonstrate:
 ## AWS Architecture Screenshots
 
 ### Cognito User Pool
-![Cognito](screenshots/cognito.png)
 
 ### API Gateway
-![API Gateway](screenshots/api-gateway.png)
 
 ### Lambda Function
-![Lambda](screenshots/lambda.png)
 
 
 ## Author
